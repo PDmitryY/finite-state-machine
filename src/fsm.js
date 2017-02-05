@@ -10,7 +10,6 @@ class FSM {
             this.config = config;
         };
         this.currentState = this.config.initial;
-        this.statesHistory = [];
     }
     /**
      * Returns active state.
@@ -62,22 +61,23 @@ class FSM {
      * @returns {Array}
      */
     getStates(event) {
+        let statesHistory = [];
         if(!event){
             for (let states in this.config.states){
-                this.statesHistory.push(states);
+                statesHistory.push(states);
             } 
         } else {
             for (let states in this.config.states){
                 for(let trans in this.config.states[states].transitions){
                     if(this.config.states[states].transitions[trans]){
                         if (trans === event){
-                            this.statesHistory.push(states);
+                            statesHistory.push(states);
                         }
                     }
                 }    
             }
         }
-        return this.statesHistory;
+        return statesHistory;
     }
 
     /**
