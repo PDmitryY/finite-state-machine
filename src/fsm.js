@@ -61,7 +61,24 @@ class FSM {
      * @param event
      * @returns {Array}
      */
-    getStates(event) {}
+    getStates(event) {
+        if(!event){
+            for (let states in this.config.states){
+                this.statesHistory.push(states);
+            } 
+        } else {
+            for (let states in this.config.states){
+                for(let trans in this.config.states[states].transitions){
+                    if(this.config.states[states].transitions[trans]){
+                        if (trans === event){
+                            this.statesHistory.push(states);
+                        }
+                    }
+                }    
+            }
+        }
+        return this.statesHistory;
+    }
 
     /**
      * Goes back to previous state.
@@ -80,7 +97,9 @@ class FSM {
     /**
      * Clears transition history
      */
-    clearHistory() {}
+    clearHistory() {
+        this.getStates().length = 0;
+    }
 }
 
 module.exports = FSM;
