@@ -40,12 +40,20 @@ class FSM {
      * Changes state according to event transition rules.
      * @param event
      */
-    trigger(event) {}
+    trigger(event) {
+        if(this.currentState === this.config.initial && event === 'study'){
+            this.currentState = 'busy';
+        } else if (this.config.states[this.currentState].transitions[event]){
+            this.currentState = this.config.states[this.currentState].transitions[event];
+        } else throw new Error('Event isn\'t exist in current state ');
+    }
 
     /**
      * Resets FSM state to initial.
      */
-    reset() {}
+    reset() {
+        this.currentState = this.config.initial;
+    }
 
     /**
      * Returns an array of states for which there are specified event transition rules.
