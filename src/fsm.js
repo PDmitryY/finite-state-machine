@@ -10,6 +10,7 @@ class FSM {
             this.config = config;
         };
         this.currentState = this.config.initial;
+        this.recordStates = [this.config.initial];
     }
     /**
      * Returns active state.
@@ -30,6 +31,7 @@ class FSM {
     changeState(state) {
         if(this.config.states[state]) {
             this.currentState = state;
+            this.recordStates.push(this.currentState);
         } else {
             throw new Error('This state does not exist')
         }
@@ -42,8 +44,10 @@ class FSM {
     trigger(event) {
         if(this.currentState === this.config.initial && event === 'study'){
             this.currentState = 'busy';
+            this.recordStates.push(this.currentState);
         } else if (this.config.states[this.currentState].transitions[event]){
             this.currentState = this.config.states[this.currentState].transitions[event];
+            this.recordStates.push(this.currentState);
         } else throw new Error('Event isn\'t exist in current state ');
     }
 
@@ -61,23 +65,23 @@ class FSM {
      * @returns {Array}
      */
     getStates(event) {
-        let statesHistory = [];
+        let eventStates = [];
         if(!event){
             for (let states in this.config.states){
-                statesHistory.push(states);
+                eventStates.push(states);
             } 
         } else {
             for (let states in this.config.states){
                 for(let trans in this.config.states[states].transitions){
                     if(this.config.states[states].transitions[trans]){
                         if (trans === event){
-                            statesHistory.push(states);
+                            eventStates.push(states);
                         }
                     }
                 }    
             }
         }
-        return statesHistory;
+        return eventStates;
     }
 
     /**
@@ -85,7 +89,13 @@ class FSM {
      * Returns false if undo is not available.
      * @returns {Boolean}
      */
-    undo() {}
+    undo() {
+        if (this.currentState === this.config.initial) {
+            return false;
+        } else {
+            this.currentState = this.recordStates[this.recordStates.length-2]
+        }
+    }
 
     /**
      * Goes redo to state.
@@ -98,7 +108,9 @@ class FSM {
      * Clears transition history
      */
     clearHistory() {
-        this.getStates().length = 0;
+        if(this.recordStates){
+            this.recordStates.length = 1;
+        }
     }
 }
 
