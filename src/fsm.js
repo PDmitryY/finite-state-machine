@@ -29,8 +29,10 @@ class FSM {
      * @param state
      */
     changeState(state) {
-        if(this.currentState !== state){
+        if(this.config.states[state]) {
             this.currentState = state;
+        } else {
+            throw new Error('This state does not exist')
         }
     }
 

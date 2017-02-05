@@ -54,7 +54,7 @@ describe('FSM', () => {
             expect(student.getState()).to.equal('hungry');
         });
 
-        it.only('throws an exception if state isn\'t exist', () => {
+        it('throws an exception if state isn\'t exist', () => {
             const student = new FSM(config);
 
             expect(() => student.changeState('hmmm... exception?')).to.throw(Error);
