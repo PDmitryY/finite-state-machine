@@ -56,6 +56,7 @@ class FSM {
      */
     reset() {
         this.currentState = this.config.initial;
+        this.recordStates.push(this.currentState);
     }
 
     /**
@@ -94,6 +95,7 @@ class FSM {
             return false;
         } else {
             this.currentState = this.recordStates[this.recordStates.length-2]
+            return true;
         }
     }
 
