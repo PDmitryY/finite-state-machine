@@ -10,7 +10,7 @@ class FSM {
             this.config = config;
         };
         this.currentState = this.config.initial;
-        this.states = [];
+        this.statesHistory = [];
     }
     /**
      * Returns active state.
@@ -29,11 +29,9 @@ class FSM {
      * @param state
      */
     changeState(state) {
-        /*if(){
-            throw new Error();
-        } else if(){
-            
-        }*/
+        if(this.currentState !== state){
+            this.currentState = state;
+        }
     }
 
     /**
