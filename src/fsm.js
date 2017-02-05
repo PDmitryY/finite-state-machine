@@ -11,6 +11,7 @@ class FSM {
         };
         this.currentState = this.config.initial;
         this.recordStates = [this.config.initial];
+        this.currentStatePosition = 0;
     }
     /**
      * Returns active state.
@@ -91,10 +92,11 @@ class FSM {
      * @returns {Boolean}
      */
     undo() {
-        if (this.currentState === this.config.initial) {
+        if (this.currentState === this.config.initial && this.currentStatePosition === 0) {
             return false;
         } else {
-            this.currentState = this.recordStates[this.recordStates.length-2]
+            this.currentStatePosition = this.recordStates.length-2;
+            this.currentState = this.recordStates[this.currentStatePosition]
             return true;
         }
     }
@@ -104,15 +106,25 @@ class FSM {
      * Returns false if redo is not available.
      * @returns {Boolean}
      */
-    redo() {}
+    redo() {
+        if (this.currentStatePosition) {
+            return false;
+        } else {
+            console.log("1", this.recordStates)
+            this.currentStatePosition = this.recordStates.length;
+            this.currentState = this.recordStates[this.currentStatePosition-1];
+            console.log("2", this.recordStates)
+            console.log("3", this.currentState);
+            console.log("4", this.currentStatePosition);
+            return true;
+        }
+    }
 
     /**
      * Clears transition history
      */
     clearHistory() {
-        if(this.recordStates){
-            this.recordStates.length = 1;
-        }
+        this.currentStatePosition = 0;
     }
 }
 
