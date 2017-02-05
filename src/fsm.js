@@ -4,27 +4,37 @@ class FSM {
      * @param config
      */
     constructor(config) {
-        if(!this.config){
+        if(!config){
             throw new Error();
         } else{
             this.config = config;
-        }
+        };
+        this.currentState = this.config.initial;
+        this.states = [];
     }
     /**
      * Returns active state.
      * @returns {String}
      */
     getState() {
-        if (!this.config.states){
+        if(this.currentState === this.config.initial){
             return this.config.initial;
-        }
+        } else {
+            return this.currentState;
+        };
     }
 
     /**
      * Goes to specified state.
      * @param state
      */
-    changeState(state) {}
+    changeState(state) {
+        /*if(){
+            throw new Error();
+        } else if(){
+            
+        }*/
+    }
 
     /**
      * Changes state according to event transition rules.

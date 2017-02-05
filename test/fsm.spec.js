@@ -39,7 +39,7 @@ describe('FSM', () => {
     });
 
     describe('#getState', () => {
-        it.only('returns initial state after creation', () => {
+        it('returns initial state after creation', () => {
             const student = new FSM(config);
 
             expect(student.getState()).to.equal('normal');
