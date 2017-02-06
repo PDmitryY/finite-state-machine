@@ -96,7 +96,7 @@ class FSM {
      * @returns {Boolean}
      */
     undo() {
-        if (this.currentStatePosition === 0 && this.recordStates.length === 1) {
+        if (this.currentStatePosition === 0 ) {
             return false;
         } else {
             this.currentStatePosition--;
@@ -112,15 +112,10 @@ class FSM {
      */
     redo() {
         if (this.currentStatePosition === 0 && this.recordStates.length === 1) {
-            console.log("1", this.recordStates)
             return false;
         } else {
-            console.log("1", this.recordStates)
             this.currentStatePosition++;
             this.currentState = this.recordStates[this.currentStatePosition];
-            console.log("2", this.recordStates)
-            console.log("3", this.currentState);
-            console.log("4", this.currentStatePosition);
             return true;
         }
     }
