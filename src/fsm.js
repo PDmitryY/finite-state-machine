@@ -33,6 +33,7 @@ class FSM {
         if(this.config.states[state]) {
             this.currentState = state;
             this.recordStates.push(this.currentState);
+            this.currentStatePosition++;
         } else {
             throw new Error('This state does not exist')
         }
@@ -46,9 +47,11 @@ class FSM {
         if(this.currentState === this.config.initial && event === 'study'){
             this.currentState = 'busy';
             this.recordStates.push(this.currentState);
+            this.currentStatePosition++;
         } else if (this.config.states[this.currentState].transitions[event]){
             this.currentState = this.config.states[this.currentState].transitions[event];
             this.recordStates.push(this.currentState);
+            this.currentStatePosition++;
         } else throw new Error('Event isn\'t exist in current state ');
     }
 
@@ -58,6 +61,7 @@ class FSM {
     reset() {
         this.currentState = this.config.initial;
         this.recordStates.push(this.currentState);
+        this.currentStatePosition++;
     }
 
     /**
@@ -92,11 +96,11 @@ class FSM {
      * @returns {Boolean}
      */
     undo() {
-        if (this.currentState === this.config.initial && this.currentStatePosition === 0) {
+        if (this.currentStatePosition === 0 && this.recordStates.length === 1) {
             return false;
         } else {
-            this.currentStatePosition = this.recordStates.length-2;
-            this.currentState = this.recordStates[this.currentStatePosition]
+            this.currentStatePosition--;
+            this.currentState = this.recordStates[this.currentStatePosition];
             return true;
         }
     }
@@ -107,12 +111,13 @@ class FSM {
      * @returns {Boolean}
      */
     redo() {
-        if (this.currentStatePosition) {
+        if (this.currentStatePosition === 0 && this.recordStates.length === 1) {
+            console.log("1", this.recordStates)
             return false;
         } else {
             console.log("1", this.recordStates)
-            this.currentStatePosition = this.recordStates.length;
-            this.currentState = this.recordStates[this.currentStatePosition-1];
+            this.currentStatePosition++;
+            this.currentState = this.recordStates[this.currentStatePosition];
             console.log("2", this.recordStates)
             console.log("3", this.currentState);
             console.log("4", this.currentStatePosition);
@@ -125,6 +130,7 @@ class FSM {
      */
     clearHistory() {
         this.currentStatePosition = 0;
+        this.recordStates.length = 1;
     }
 }
 
