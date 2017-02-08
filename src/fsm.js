@@ -8,21 +8,22 @@ class FSM {
             throw new Error();
         } else{
             this.config = config;
-        };
+        }
         this.currentState = this.config.initial;
         this.recordStates = [this.config.initial];
         this.currentStatePosition = 0;
+        this.recordMethods = [];
     }
     /**
      * Returns active state.
      * @returns {String}
      */
     getState() {
-        if(this.currentState === this.config.initial){
+        /*if(this.currentState === this.config.initial){
             return this.config.initial;
-        } else {
+        } else {*/
             return this.currentState;
-        };
+        /*}*/
     }
 
     /**
@@ -34,8 +35,9 @@ class FSM {
             this.currentState = state;
             this.recordStates.push(this.currentState);
             this.currentStatePosition++;
+            this.recordMethods.push('changeState');
         } else {
-            throw new Error('This state does not exist')
+            throw new Error('This state does not exist');
         }
     }
 
@@ -48,10 +50,12 @@ class FSM {
             this.currentState = 'busy';
             this.recordStates.push(this.currentState);
             this.currentStatePosition++;
+            this.recordMethods.push('trigger');
         } else if (this.config.states[this.currentState].transitions[event]){
             this.currentState = this.config.states[this.currentState].transitions[event];
             this.recordStates.push(this.currentState);
             this.currentStatePosition++;
+            this.recordMethods.push('trigger');
         } else throw new Error('Event isn\'t exist in current state ');
     }
 
@@ -62,6 +66,7 @@ class FSM {
         this.currentState = this.config.initial;
         this.recordStates.push(this.currentState);
         this.currentStatePosition++;
+        this.recordMethods.push('reset');
     }
 
     /**
@@ -96,11 +101,12 @@ class FSM {
      * @returns {Boolean}
      */
     undo() {
-        if (this.currentStatePosition === 0 ) {
+        if (this.currentStatePosition === 0 /*&& this.recordStates.length === 1*/) {
             return false;
         } else {
             this.currentStatePosition--;
             this.currentState = this.recordStates[this.currentStatePosition];
+            this.recordMethods.push('undo');
             return true;
         }
     }
@@ -113,11 +119,17 @@ class FSM {
     redo() {
         if (this.currentStatePosition === 0 && this.recordStates.length === 1) {
             return false;
-        } else {
+        } else if (this.currentStatePosition < (this.recordStates.length - 1)){
+            if (this.recordMethods[(this.recordMethods.length - 1)] === 'changeState' || this.recordMethods[(this.recordMethods.length - 1)] === 'trigger'){
+                return false;
+            }
             this.currentStatePosition++;
             this.currentState = this.recordStates[this.currentStatePosition];
+            this.recordMethods.push('redo');
             return true;
-        }
+        } else if (this.currentStatePosition === (this.recordStates.length - 1)){
+            return false;
+        } 
     }
 
     /**
@@ -126,6 +138,7 @@ class FSM {
     clearHistory() {
         this.currentStatePosition = 0;
         this.recordStates.length = 1;
+        this.recordMethods.push('clearHistory');
     }
 }
 

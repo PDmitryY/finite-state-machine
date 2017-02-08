@@ -250,6 +250,7 @@ describe('FSM', () => {
             student.trigger('study');
             student.undo();
             student.trigger('study');
+            console.log(this.recordMethods);
             student.redo();
 
             expect(student.redo()).to.be.false;
